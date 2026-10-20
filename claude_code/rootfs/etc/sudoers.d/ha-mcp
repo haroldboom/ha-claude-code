@@ -1,0 +1,4 @@
+# The only privilege claude has: start ha-mcp as mcp, with no arguments and a
+# reset environment, so it can't pass in a different mode or token.
+Defaults:claude env_reset
+claude ALL=(mcp) NOPASSWD: /usr/local/bin/ha-mcp-stdio ""

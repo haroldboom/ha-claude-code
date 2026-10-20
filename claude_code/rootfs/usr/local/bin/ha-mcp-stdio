@@ -1,0 +1,9 @@
+#!/bin/bash
+# Runs as mcp (via sudo from Claude Code). Settings come only from the env file
+# start.sh wrote, which claude can't read or change.
+set -euo pipefail
+set -a
+# shellcheck disable=SC1091
+. /run/ha-mcp/env
+set +a
+exec /opt/ha-mcp/bin/ha-mcp

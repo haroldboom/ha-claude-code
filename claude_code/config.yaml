@@ -1,0 +1,31 @@
+name: Claude Code
+version: "0.1.0"
+slug: claude_code
+description: Claude Code in the sidebar, with the ha-mcp server built in and a read-only switch
+url: https://github.com/haroldboom/ha-claude-code
+arch:
+  - aarch64
+  - amd64
+init: false
+ingress: true
+ingress_port: 7681
+panel_icon: mdi:robot-outline
+panel_title: Claude Code
+# Only used in read_write mode when no read_write_token is set. The token never
+# reaches Claude's processes: see DOCS.md "How read-only is enforced".
+homeassistant_api: true
+map:
+  - type: addon_config
+    read_only: false
+options:
+  mode: read_only
+  read_only_token: ""
+  read_write_token: ""
+  ha_url: "http://homeassistant:8123"
+  anthropic_api_key: ""
+schema:
+  mode: list(read_only|read_write)
+  read_only_token: password?
+  read_write_token: password?
+  ha_url: url
+  anthropic_api_key: password?

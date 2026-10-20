@@ -1,0 +1,10 @@
+#!/bin/bash
+# Started by ttyd inside tmux, as claude. Runs Claude Code, then a shell.
+export DISABLE_AUTOUPDATER=1
+cd /config/workspace || cd ~
+if [ "${1:-}" != "--shell" ]; then
+    claude || true
+fi
+echo
+echo "Claude Code exited. Type 'claude' to start it again."
+exec bash -l

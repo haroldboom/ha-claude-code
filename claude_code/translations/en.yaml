@@ -1,0 +1,23 @@
+configuration:
+  mode:
+    name: Access mode
+    description: >-
+      read_only uses the read-only HA user's token and turns on ha-mcp's
+      read-only mode. read_write uses read_write_token, or the add-on's own
+      admin token when that is empty. Restart the add-on after changing it.
+  read_only_token:
+    name: Read-only user token
+    description: >-
+      Long-lived token of an HA user in the system-read-only group. The add-on
+      refuses to start in read_only mode if this token can do more than read.
+  read_write_token:
+    name: Read/write token
+    description: >-
+      Optional. Token used in read_write mode. Leave empty to use the add-on's
+      built-in admin access.
+  ha_url:
+    name: Home Assistant URL
+    description: Used with the tokens above. The default reaches HA from inside the add-on network.
+  anthropic_api_key:
+    name: Anthropic API key
+    description: Optional. Leave empty to log in with your Claude account in the terminal instead.

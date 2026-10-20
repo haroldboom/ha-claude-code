@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "home-assistant": {
+      "type": "stdio",
+      "command": "sudo",
+      "args": ["-n", "-u", "mcp", "/usr/local/bin/ha-mcp-stdio"]
+    }
+  }
+}
