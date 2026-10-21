@@ -1,5 +1,5 @@
 name: Claude Code
-version: "0.1.0"
+version: "0.2.0"
 slug: claude_code
 description: Claude Code in the sidebar, with the ha-mcp server built in and a read-only switch
 url: https://github.com/haroldboom/ha-claude-code
@@ -22,10 +22,12 @@ options:
   read_only_token: ""
   read_write_token: ""
   ha_url: "http://homeassistant:8123"
+  claude_oauth_token: ""
   anthropic_api_key: ""
 schema:
   mode: list(read_only|read_write)
   read_only_token: password?
   read_write_token: password?
   ha_url: url
+  claude_oauth_token: password?
   anthropic_api_key: password?

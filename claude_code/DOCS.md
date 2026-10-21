@@ -14,9 +14,8 @@ One option switches between read-only and read/write access to Home Assistant.
    4. Start Core (`ha core start`), log in as that user, and create a long-lived
       access token on its profile page.
 2. Paste the token into **read_only_token** and start the add-on.
-3. Open **Claude Code** in the sidebar. Log in with your Claude account when
-   prompted, or set **anthropic_api_key** instead. The login is stored in the
-   add-on config folder and survives restarts and updates.
+3. Open **Claude Code** in the sidebar and log in. You have three ways to log in
+   (see [Claude login](#claude-login)). Logging in from the terminal is the default.
 4. Run `/mcp` in Claude Code: `home-assistant` should show as connected.
 
 ## Options
@@ -27,7 +26,27 @@ One option switches between read-only and read/write access to Home Assistant.
 | `read_only_token` | Token of the read-only HA user. Required for `read_only`. |
 | `read_write_token` | Optional token for `read_write`. Empty means the add-on's own admin access. |
 | `ha_url` | Where to reach HA with the tokens above. The default works inside HA OS. |
-| `anthropic_api_key` | Optional. Empty means log in with your Claude account. |
+| `claude_oauth_token` | Optional. Pro/Max subscription token from `claude setup-token`. |
+| `anthropic_api_key` | Optional. API key, billed to the API account. Ignored if `claude_oauth_token` is set. |
+
+## Claude login
+
+Claude Pro and Max subscriptions include Claude Code, and usage counts against
+the same limits as claude.ai. There are three ways to log in:
+
+- **Log in from the terminal** (default, nothing to set). Choose the Claude account
+  option, open the link it prints on any device, approve, and paste the code back.
+  The login is stored in the add-on config folder, survives restarts and updates,
+  and refreshes itself.
+- **`claude_oauth_token`**: run `claude setup-token` on any computer where you use
+  Claude Code. It prints a subscription token that lasts about a year. Paste it into
+  this option and restart; the terminal then skips the login screen. When it
+  expires, generate a new one.
+- **`anthropic_api_key`**: pay-per-use API billing instead of a subscription.
+
+If both a token and a key are set, the add-on uses the subscription token, so a
+leftover key never moves billing off the subscription. Claude can see its own login
+credential (it needs it to run). It still never sees the Home Assistant token.
 
 ## How read-only is enforced
 

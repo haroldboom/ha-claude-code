@@ -94,9 +94,26 @@ CLAUDE_ENV=(HOME=/config/home USER=claude LOGNAME=claude SHELL=/bin/bash
     TERM=xterm-256color LANG=C.UTF-8
     PATH=/usr/local/bin:/usr/bin:/bin
     CLAUDE_HA_MODE="$MODE")
+# Claude login: a subscription token wins over an API key, so a leftover key
+# never silently moves billing off the subscription.
+OAUTH=$(opt claude_oauth_token)
 KEY=$(opt anthropic_api_key)
-[ -n "$KEY" ] && CLAUDE_ENV+=(ANTHROPIC_API_KEY="$KEY")
-unset KEY
+if [ -n "$OAUTH" ]; then
+    CLAUDE_ENV+=(CLAUDE_CODE_OAUTH_TOKEN="$OAUTH")
+    [ -n "$KEY" ] && log "both claude_oauth_token and anthropic_api_key are set; using the subscription token."
+    # With a token there's nothing to log in to, so skip the first-run screens.
+    CJ=/config/home/.claude.json
+    [ -s "$CJ" ] || echo '{}' > "$CJ"
+    jq '.hasCompletedOnboarding = true' "$CJ" > "$CJ.tmp" && mv "$CJ.tmp" "$CJ"
+    chown claude:claude "$CJ"; chmod 0600 "$CJ"
+    log "Claude login: subscription token."
+elif [ -n "$KEY" ]; then
+    CLAUDE_ENV+=(ANTHROPIC_API_KEY="$KEY")
+    log "Claude login: API key."
+else
+    log "Claude login: none set; log in from the terminal."
+fi
+unset OAUTH KEY
 
 cd /config/workspace
 exec env -i "${CLAUDE_ENV[@]}" \

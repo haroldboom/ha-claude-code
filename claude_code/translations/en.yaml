@@ -18,6 +18,13 @@ configuration:
   ha_url:
     name: Home Assistant URL
     description: Used with the tokens above. The default reaches HA from inside the add-on network.
+  claude_oauth_token:
+    name: Claude subscription token
+    description: >-
+      Optional. Output of `claude setup-token` (Pro/Max subscription, lasts about
+      a year). Skips the login in the terminal. Takes priority over the API key.
   anthropic_api_key:
     name: Anthropic API key
-    description: Optional. Leave empty to log in with your Claude account in the terminal instead.
+    description: >-
+      Optional. Bills the API account instead of a subscription. Leave empty to
+      use a subscription (token above, or log in in the terminal).

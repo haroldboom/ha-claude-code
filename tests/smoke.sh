@@ -41,7 +41,7 @@ tools() {  # $1=name -> "name ro|rw" lines, via the same sudo path Claude Code u
 as_claude() { docker exec -u claude "$NET-ro" bash -c "$1" </dev/null >/dev/null 2>&1; }
 
 # --- read_only ---------------------------------------------------------------
-if start_addon ro '{"mode":"read_only","read_only_token":"ro-token","ha_url":"http://mockha:8123"}'; then
+if start_addon ro '{"mode":"read_only","read_only_token":"ro-token","ha_url":"http://mockha:8123","claude_oauth_token":"oat-fake","anthropic_api_key":"key-fake"}'; then
     pass "read_only starts with a read-only user's token"
 else
     fail "read_only did not start"; docker logs "$NET-ro" 2>&1 | tail -20
@@ -61,6 +61,15 @@ as_claude "sudo -n -u mcp /usr/local/bin/ha-mcp-stdio --help" \
     && fail "sudo accepts extra arguments" || pass "sudo rejects extra arguments"
 as_claude "sudo -n -u mcp READ_ONLY_MODE=false /usr/local/bin/ha-mcp-stdio" \
     && fail "sudo accepts env overrides" || pass "sudo rejects env overrides"
+
+# Claude login: the subscription token reaches Claude and beats the API key.
+CENV=$(docker exec -u claude "$NET-ro" bash -c 'tr "\0" "\n" < /proc/$(pgrep -u claude -o ttyd)/environ')
+echo "$CENV" | grep -qx CLAUDE_CODE_OAUTH_TOKEN=oat-fake && pass "subscription token passed to Claude" \
+    || fail "subscription token not passed to Claude"
+echo "$CENV" | grep -q '^ANTHROPIC_API_KEY=' && fail "API key passed alongside the subscription token" \
+    || pass "API key dropped when a subscription token is set"
+docker exec -u claude "$NET-ro" jq -e '.hasCompletedOnboarding == true' /config/home/.claude.json >/dev/null \
+    && pass "first-run login screen skipped with a token" || fail "onboarding not marked complete"
 
 RO=$(tools ro)
 [ -n "$RO" ] && pass "MCP handshake over sudo works ($(echo "$RO" | wc -l) tools)" || fail "no tools listed"
